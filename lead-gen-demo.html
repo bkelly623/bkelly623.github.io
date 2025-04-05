@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lead Gen Bot Demo</title>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 20px; }
+    #chatbox { width: 100%; max-width: 500px; margin: auto; background: white; border-radius: 10px; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .msg { margin: 10px 0; }
+    .bot { color: #0077cc; }
+    .user { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div id="chatbox">
+    <h2>Lead Generation Chatbot</h2>
+    <div id="chatlog"></div>
+    <input type="text" id="userInput" placeholder="Type your message..." autofocus />
+    <button onclick="handleInput()">Send</button>
+  </div>
+
+  <script>
+    const chatlog = document.getElementById("chatlog");
+    const input = document.getElementById("userInput");
+
+    let step = 0;
+    let leadData = {
+      name: "",
+      service: "",
+      email: "",
+      phone: ""
+    };
+
+    function addMessage(sender, text) {
+      const msg = document.createElement("div");
+      msg.classList.add("msg", sender);
+      msg.innerText = sender === "bot" ? "Bot: " + text : "You: " + text;
+      chatlog.appendChild(msg);
+      chatlog.scrollTop = chatlog.scrollHeight;
+    }
+
+    function handleInput() {
+      const userText = input.value.trim();
+      if (!userText) return;
+      addMessage("user", userText);
+      input.value = "";
+
+      setTimeout(() => {
+        stepLogic(userText);
+      }, 500);
+    }
+
+    function stepLogic(userText) {
+      switch (step) {
+        case 0:
+          addMessage("bot", "Hi there! What's your name?");
+          step++;
+          break;
+        case 1:
+          leadData.name = userText;
+          addMessage("bot", `Nice to meet you, ${leadData.name}! What service are you interested in?`);
+          step++;
+          break;
+        case 2:
+          leadData.service = userText;
+          addMessage("bot", `Got it — ${leadData.service}. What's your email address?`);
+          step++;
+          break;
+        case 3:
+          leadData.email = userText;
+          addMessage("bot", `Thanks! Lastly, can I get your phone number?`);
+          step++;
+          break;
+        case 4:
+          leadData.phone = userText;
+          addMessage("bot", `Thanks, ${leadData.name}! We've received your info:\nService: ${leadData.service}\nEmail: ${leadData.email}\nPhone: ${leadData.phone}\nWe'll be in touch soon.`);
+          step++;
+          break;
+        default:
+          addMessage("bot", "Thanks again! We'll reach out shortly.");
+      }
+    }
+
+    // Start the flow automatically
+    window.onload = () => {
+      stepLogic();
+    };
+  </script>
+</body>
+</html>
