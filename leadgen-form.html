@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lead Gen Chatbot</title>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial; padding: 2rem; background: #f9f9f9; }
+    #chatbox { max-width: 600px; margin: auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    input, button { width: 100%; padding: 0.5rem; margin: 0.5rem 0; }
+  </style>
+</head>
+<body>
+  <div id="chatbox">
+    <h2>Lead Generation Chat</h2>
+    <input id="name" placeholder="Your name" />
+    <input id="service" placeholder="Service you're interested in" />
+    <input id="email" placeholder="Email address" />
+    <input id="phone" placeholder="Phone number" />
+    <button onclick="submitLead()">Submit</button>
+    <p id="response"></p>
+  </div>
+
+  <script>
+    function submitLead() {
+      const name = document.getElementById("name").value;
+      const service = document.getElementById("service").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+
+      fetch("http://35.237.163.51:5000/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, service, email, phone })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("response").innerText = data.message;
+      })
+      .catch(() => {
+        document.getElementById("response").innerText = "Submission failed. Try again later.";
+      });
+    }
+  </script>
+</body>
+</html>
